@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blox-Boom.Github.io</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Exo+2:ital,wght@0,600;1,600&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/All Images/blox boom.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'poppins', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #2b1c34;
+      min-height: 100vh;
+      color: #fff;
+      display: flex;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+    }
+
+    /* Ensure body takes full height */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: rgba(26, 0, 65, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 2px 0 20px rgba(0, 0, 0, 0.6);
+      padding: 2rem 0;
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar li {
+      margin: 0.5rem 1.5rem;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      font-weight: 700;
+      font-size: 17px;
+      color: #ffffff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .sidebar li:hover,
+    .sidebar li.active {
+      background: linear-gradient(45deg, #1e3c72, #2a5298);
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+
+    /* Toggle (mobile) */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 1100;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background: #333;
+      margin: 5px 0;
+      border-radius: 2px;
+    }
+
+    /* Main */
+    main {
+      flex: 1;
+      margin-left: 260px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .content {
+      flex: 1;
+      padding: 2rem;
+    }
+
+    .top-ad {
+      width: 100%;
+      max-width: 970px;
+      height: 90px;
+      background: #333;
+      margin: 15px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+    }
+
+    /* Game Layout */
+    .game-layout {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin: 20px auto;
+      max-width: 1300px;
+    }
+
+    .side-ad {
+      width: 160px;
+      height: 600px;
+      background: #444;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .game-frame {
+      flex: 1;
+      max-width: 900px;
+      height: 600px;
+      background: #1e1d3f;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 16 / 9;
+      min-width: 300px;
+    }
+
+    .game-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .fullscreen-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #00ffcc;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      z-index: 10;
+    }
+
+    .loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border: 6px solid transparent;
+  border-top: 6px solid #00ffcc;
+  border-right: 6px solid #ff00cc;
+  border-radius: 50%;
+  animation: spin 1s linear infinite, pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(0, 255, 204, 0.6),
+              0 0 40px rgba(255, 0, 204, 0.4);
+}
+
+@keyframes spin {
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.6),
+                0 0 40px rgba(255, 0, 204, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 255, 204, 1),
+                0 0 60px rgba(255, 0, 204, 0.8);
+  }
+}
+
+
+    /* Suggested */
+    .suggested {
+      max-width: 1300px;
+      margin: 25px auto;
+    }
+
+    .suggested h2 {
+      font-size: 26px;
+      margin-bottom: 30px;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .game-card {
+      background: #26244d;
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+      color: white;
+      text-align: center;
+      position: relative;
+    }
+
+    .game-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .game-card:hover {
+      transform: scale(1.05);
+    }
+
+    .game-card h3 {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      color: #fff;
+    }
+
+    .game-card:hover h3 {
+      opacity: 1;
+    }
+
+    /* Footer */
+    .footer {
+      background: #2b1c34;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      margin-left: 250px;
+      /* sidebar ke liye */
+      transition: margin-left 0.3s ease;
+    }
+
+    .footer p {
+      font-size: 1rem;
+      opacity: 0.8;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .footer-links li {
+      display: inline;
+    }
+
+    .footer-links a {
+      color: #fff;
+      text-decoration: none;
+      opacity: 0.8;
+      font-size: 0.95rem;
+      transition: opacity 0.3s ease, color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      opacity: 1;
+      color: #4ecdc4;
+      /* hover highlight color */
+    }
+
+    /* Responsive */
+    @media only screen and (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+        width: 260px;
+      }
+
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+
+      main {
+        margin-left: 0;
+      }
+
+      .game-layout {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .side-ad {
+        width: 100%;
+        max-width: 320px;
+        height: 100px;
+      }
+
+      .game-frame {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <h2>Blox-Boom</h2>
+      <ul>
+        <li class="active">🏠 All Games</li>
+        <li>⚽ Sports</li>
+        <li>🏎️ Driving</li>
+        <li>🎯 Shooting</li>
+        <li>🧩 Puzzle</li>
+        <li>🆕 New Games</li>
+        <li>🎮 Multiplayer</li>
+        <li>🏃 Running</li>
+        <li>⚔️ Action</li>
+        <li>👻 Horror</li>
+        <li>👆 Clicker Games</li>
+        <li>🧊 3D Games</li>
+        <li>🗺️ Adventure</li>
+      </ul>
+    </div>
+
+    <!-- Main -->
+    <main>
+      <div class="content">
+        <div class="top-ad">Top Banner Ad</div>
+
+        <div class="game-layout">
+          <div class="side-ad">Left Ad</div>
+
+          <div class="game-frame" id="gameBox">
+            <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+            <div class="loader" id="loader"></div>
+            <iframe id="gameIframe" src="" title="Game"></iframe>
+          </div>
+
+          <div class="side-ad">Right Ad</div>
+        </div>
+
+
+        <!-- Suggested -->
+        <div class="suggested">
+          <h2>Suggested Games</h2>
+          <div class="games-grid">
+            <!-- Game Cards -->
+            <div class="game-card">
+              <a href="loader.html?game=/projects/survialarena.html">
+                <img src="/All Images/survial arena.png" alt="survial arean">
+                <h3>Survial Arena</h3>
+              </a>
+            </div>
+
+            <div class="game-card">
+              <a href="loader.html?game=projects/minishooter.html">
+                <img src="All Images/mini shooter -logo.png" alt="Mini shooter">
+                <h3>Mini Shooter</h3>
+              </a>
+            </div>
+
+            <div class="game-card">
+              <a href="loader.html?game=projects/boxingrandom.html">
+                <img src="/All Images/boxing-random logo.jpg" alt="boxing random">
+                <h3>Boxing Random</h3>
+              </a>
+            </div>
+
+            <div class="game-card">
+              <a href="loader.html?game=projects/tunnelrush2.html">
+                <img src="/All Images/tunnel-rush-2.png" alt="tunnel rush 2">
+                <h3>Tunnel Rush 2</h3>
+              </a>
+            </div>
+
+            <div class="game-card">
+              <a href="loader.html?game=projects/spiderdude.html">
+                <img src="All Images/spider dude-logo.png" alt="spider dude">
+                <h3>Spider Dude</h3>
+              </a>
+            </div>
+
+            <div class="game-card">
+              <a href="loader.html?game=projects/madalinstuntcar2.html">
+                <img src="/All Images/madline stunt cars 2.png" alt="madalin stunt car 2">
+                <h3>Madaline Stunt Car 2</h3>
+              </a>
+            </div>
+
+            <div class="game-card">
+              <a href="loader.html?game=projects/fridaynightfunkin.html">
+                <img src="/All Images/friday-night-funkin-logo.jpg" alt="friday night funkin">
+                <h3>Friday Night Funkin</h3>
+              </a>
+            </div>
+
+            <div class="game-card">
+              <a href="loader.html?game=projects/cssurf.html">
+                <img src="/All Images/cs surf.png" alt="cs surf">
+                <h3>CS Surf</h3>
+              </a>
+            </div>
+
+            <div class="game-card">
+              <a href="loader.html?game=projects/cheesechompers3d.html">
+                <img src="/All Images/cheese chompers-logo.png" alt="cheese chompers 3d">
+                <h3>Cheese Chompers 3D</h3>
+              </a>
+            </div>
+
+            <div class="game-card">
+              <a href="loader.html?game=projects/fivenightsatfreddysweb.html">
+                <img src="/All Images/fnaf web.png" alt="Truck loader 4">
+                <h3>Truck Loader 4</h3>
+              </a>
+            </div>
+
+            <div class="game-card">
+              <a href="loader.html?game=projects/orionstandbox.html">
+                <img src="/All Images/orion srandbox.png" alt="orion standbox">
+                <h3>Orion Standbox</h3>
+              </a>
+            </div>
+
+            <div class="game-card">
+              <a href="loader.html?game=projects/incredibox.html">
+                <img src="/All Images/incredibox.png" alt="incredibox">
+                <h3>Incredibox</h3>
+              </a>
+
+            </div>
+
+
+          </div>
+    </main>
+  </div>
+
+
+
+
+  <hr>
+
+  <!-- Footer -->
+  
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Blox-Boom</p>
+        <p>Contact Us : Bloxboom@gmail.com</p>
+
+    </footer>
+
+
+
+  <script>
+    // Sidebar toggle
+    document.getElementById("menuToggle").addEventListener("click", () => {
+      document.getElementById("sidebar").classList.toggle("mobile-open");
+    });
+
+    // Fullscreen toggle
+    function toggleFullscreen() {
+      const iframe = document.getElementById("gameIframe");
+      if (iframe.requestFullscreen) iframe.requestFullscreen();
+      else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+    }
+
+    // Loader + game load
+    const urlParams = new URLSearchParams(window.location.search);
+    const gameUrl = urlParams.get("game");
+    const iframe = document.getElementById("gameIframe");
+    const loader = document.getElementById("loader");
+
+    if (gameUrl) {
+      loader.style.display = "block";
+      iframe.style.display = "none";
+      iframe.src = gameUrl;
+      iframe.onload = () => {
+        loader.style.display = "none";
+        iframe.style.display = "block";
+      };
+    } else {
+      loader.innerHTML = "<p style='color:white'>⚠ No game selected!</p>";
+    }
+  </script>
+</body>
+
+</html>
