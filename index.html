@@ -49,7 +49,7 @@
             box-shadow: 2px 0 20px rgba(0, 0, 0, 0.6);
             padding: 2rem 0;
             position: fixed;
-            height: 100vh;
+            height: 100%;
             z-index: 1000;
             overflow-y: auto;
             transition: transform 0.3s ease;
@@ -254,6 +254,7 @@
             margin-left: 250px;
             /* sidebar ke liye */
             transition: margin-left 0.3s ease;
+            height: 100hv;
         }
 
         .footer p {
@@ -291,76 +292,121 @@
         }
 
 
-        /* Responsive Design */
+        /* -------- Tablets & Small Laptops -------- */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+
+
+            .main-content {
+                margin-left: 220px;
+                padding: 1.5rem;
+            }
+
+            .footer {
+                margin-left: 220px;
+            }
+
+            .games-container {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+
+        /* -------- Large Phones & Tablets -------- */
         @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                /* ✅ smooth open/close */
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 240px;
+                height: 100%;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
             .menu-toggle {
                 display: block;
             }
 
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
             .main-content {
                 margin-left: 0;
-                padding: 4rem 1rem 2rem;
+                padding: 1rem;
             }
 
             .footer {
                 margin-left: 0;
+                padding: 1.5rem;
             }
 
             .games-container {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                display: grid;
+                grid-template-columns: repeat(4, 160px);
                 gap: 1rem;
+                justify-content: center;
+            }
+
+            .game-box {
+                width: 160px;
+                height: 160px;
+                border-radius: 20px;
+            }
+
+            .game-box img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
+        /* -------- Small Phones -------- */
+        @media (max-width: 480px) {
+            .games-container {
+                display: grid;
+                grid-template-columns: repeat(3, 160px);
+                gap: 1rem;
+                justify-content: center;
+            }
+
+            .game-box {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 1/1;
             }
 
             .games-header h2 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
+                margin-left: 0;
+                text-align: center;
             }
 
-            .game-box.hidden {
-                display: none;
+            .footer p {
+                font-size: 0.85rem;
             }
         }
 
-        @media (max-width: 480px) {
+        /* -------- Very Small Phones -------- */
+        @media (max-width: 360px) {
             .games-container {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 4.rem;
+                display: grid;
+                grid-template-columns: repeat(2, 160px);
+                gap: 1rem;
+                justify-content: center;
             }
 
-            .game-box h3 {
-                display: none;
+            .game-box {
+                max-width: 90%;
+                margin: 0 auto;
             }
-
-            .main-content {
-                padding: 4rem 0.5rem 2rem;
-            }
-
-            .ad-banner {
-                margin: 0 0.5rem 2rem;
-            }
-
-            .game-box.hidden {
-                display: none;
-            }
-
-             /* Game Box */
-        .game-box {
-            width: 145px;
-            /* fixed width */
-            height: 145px;
-            /* fixed height */
         }
 
-    }
-        
-        
+
+
 
         /* Loading Animation */
         .loading {
@@ -1479,13 +1525,13 @@
             });
         }
 
-        // Mobile menu toggle
+        // ✅ Sidebar Toggle
         document.getElementById('menuToggle').addEventListener('click', function () {
             const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('open');
+            sidebar.classList.toggle('active'); // CSS wale class ka naam active hi hai
         });
 
-        // Close sidebar when clicking outside on mobile
+        // ✅ Mobile par bahar click karne se sidebar band ho jaye
         document.addEventListener('click', function (e) {
             const sidebar = document.getElementById('sidebar');
             const menuToggle = document.getElementById('menuToggle');
@@ -1493,15 +1539,16 @@
             if (window.innerWidth <= 768 &&
                 !sidebar.contains(e.target) &&
                 !menuToggle.contains(e.target) &&
-                sidebar.classList.contains('open')) {
-                sidebar.classList.remove('open');
+                sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
             }
         });
 
-        // Handle window resize
+        // ✅ Window resize handle
         window.addEventListener('resize', function () {
+            const sidebar = document.getElementById('sidebar');
             if (window.innerWidth > 768) {
-                document.getElementById('sidebar').classList.remove('open');
+                sidebar.classList.remove('active');
             }
         });
 
